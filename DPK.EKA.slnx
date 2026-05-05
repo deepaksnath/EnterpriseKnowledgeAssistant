@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="DPK.EKA.Api/DPK.EKA.Api.csproj" />
+  <Project Path="DPK.EKA.Application/DPK.EKA.Application.csproj" />
+  <Project Path="DPK.EKA.Domain/DPK.EKA.Domain.csproj" />
+  <Project Path="DPK.EKA.Infrastructure/DPK.EKA.Infrastructure.csproj" />
+</Solution>
