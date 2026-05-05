@@ -26,12 +26,5 @@ namespace DPK.EKA.Infrastructure.Services
 
             return embedding.ToFloats();
         }
-
-        //public async Task<float[]> CreateEmbeddingAsync(string text)
-        //{
-        //    var embClient = _client.GetEmbeddingClient(_deployment);
-        //    var resp = await embClient.GenerateEmbeddingAsync(text);
-        //    return resp.Value.Data[0].Embedding.ToArray();
-        //}
     }
 }

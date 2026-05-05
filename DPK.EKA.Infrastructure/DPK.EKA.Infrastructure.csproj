@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="PdfPig" Version="0.1.14" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\DPK.EKA.Application\DPK.EKA.Application.csproj" />
   </ItemGroup>
 
