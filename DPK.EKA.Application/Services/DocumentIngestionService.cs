@@ -3,7 +3,7 @@ using DPK.EKA.Application.Models;
 using DPK.EKA.Domain;
 using UglyToad.PdfPig;
 
-namespace DPK.EKA.Infrastructure.Services
+namespace DPK.EKA.Application.Services
 {
     public class DocumentIngestionService : IDocumentIngestionService
     {
@@ -40,14 +40,6 @@ namespace DPK.EKA.Infrastructure.Services
 
             return new IngestionResult(fileName, result.Count);
         }
-
-        //private static List<string> Chunk(string text, int size = 500)
-        //{
-        //    var list = new List<string>();
-        //    for (int i = 0; i < text.Length; i += size)
-        //        list.Add(text.Substring(i, Math.Min(size, text.Length - i)));
-        //    return list;
-        //}
 
         public static List<string> ExtractChunks(Stream pdfStream, int chunkSize = 500)
         {
