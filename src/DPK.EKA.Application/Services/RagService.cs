@@ -9,12 +9,14 @@ namespace DPK.EKA.Application.Services
         private readonly IEmbeddingService _embeddingService;
         private readonly ISearchService _searchService;
         private readonly IChatService _chatService;
+        private readonly IConversationService _conversationService;
 
-        public RagService(
+        public RagService(IConversationService conversationService,
                           IEmbeddingService embeddingService,
                           ISearchService searchService,
                           IChatService chatService)
         {
+            _conversationService = conversationService;
             _embeddingService = embeddingService;
             _searchService = searchService;
             _chatService = chatService;
@@ -36,6 +38,9 @@ namespace DPK.EKA.Application.Services
 
             // 5. Extract sources
             var sources = results.Select(r => r.Source).Distinct().ToList();
+
+            // 6. Save conversation into database
+            var res = await _conversationService.CreateConversationAsync(question, answer, sources);
 
             return new RagResponse(answer, sources);
         }

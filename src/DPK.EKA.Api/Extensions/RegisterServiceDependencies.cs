@@ -4,7 +4,9 @@ using Azure.Search.Documents;
 using DPK.EKA.Application.Interfaces;
 using DPK.EKA.Application.Models;
 using DPK.EKA.Application.Services;
+using DPK.EKA.Domain.Repositories;
 using DPK.EKA.Domain.Services;
+using DPK.EKA.Infrastructure.Repositories;
 using DPK.EKA.Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
@@ -17,16 +19,17 @@ namespace DPK.EKA.Api.Extensions
 {
     public static class RegisterServiceDependencies
     {
-        public static IServiceCollection RegisterServices(this IServiceCollection services)
+        public static IServiceCollection RegisterServices(this IServiceCollection services,
+                                                         IConfiguration configuration)
         {
             // Settings
-            var config = new ConfigurationBuilder()
-                         .SetBasePath(Directory.GetCurrentDirectory())
-                         .AddJsonFile("appsettings.json", optional: false)
-                         .Build();
+            //var config = new ConfigurationBuilder()
+            //             .SetBasePath(Directory.GetCurrentDirectory())
+            //             .AddJsonFile("appsettings.json", optional: false)
+            //             .Build();
 
             services.AddOptions<AzureAiSettings>()
-                    .Bind(config.GetSection("AzureAiSettings"))
+                    .Bind(configuration.GetSection("AzureAiSettings"))
                     .ValidateDataAnnotations()
                     .ValidateOnStart();
 
@@ -62,6 +65,7 @@ namespace DPK.EKA.Api.Extensions
             services.AddScoped<ISearchService, SearchService>();
             services.AddScoped<IChatService, ChatService>();
             services.AddScoped<IRagService, RagService>();
+            services.AddScoped<IConversationService, ConversationService>();
 
             // Swagger
             services.AddEndpointsApiExplorer();
