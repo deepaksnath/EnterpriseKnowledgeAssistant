@@ -7,5 +7,6 @@
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/DPK.EKA.Api.Tests/DPK.EKA.Api.Tests.csproj" Id="19517fe9-a3e5-43ae-bd40-84c26b0d9681" />
+    <Project Path="tests/DPK.EKA.Application.Tests/DPK.EKA.Application.Tests.csproj" Id="d798a43e-31ae-4d3a-802d-be3ae67c0b4f" />
   </Folder>
 </Solution>

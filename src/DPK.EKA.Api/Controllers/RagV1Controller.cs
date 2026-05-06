@@ -1,12 +1,14 @@
 ﻿using DPK.EKA.Application.Interfaces;
 using DPK.EKA.Application.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace DPK.EKA.Api.Controllers
 {
     [ApiController]
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/rag")]
+    [EnableRateLimiting("SlidingWindowPolicy")]
     public class RagV1Controller : ControllerBase
     {
         private readonly IRagService _ragService;

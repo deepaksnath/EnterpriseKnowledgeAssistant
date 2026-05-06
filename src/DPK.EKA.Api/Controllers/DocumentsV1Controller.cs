@@ -1,11 +1,13 @@
 ﻿using DPK.EKA.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace DPK.EKA.Api.Controllers
 {
     [ApiController]
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/documents")]
+    [EnableRateLimiting("SlidingWindowPolicy")]
     public class DocumentsV1Controller : ControllerBase
     {
         private readonly IDocumentIngestionService _service;
