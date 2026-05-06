@@ -17,6 +17,8 @@ namespace DPK.EKA.Api.Extensions
     {
         public static IServiceCollection RegisterServices(this IServiceCollection services)
         {
+            services.AddControllers();
+
             // settings
             var config = new ConfigurationBuilder()
                          .SetBasePath(Directory.GetCurrentDirectory())
