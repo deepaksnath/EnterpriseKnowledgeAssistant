@@ -30,28 +30,23 @@ namespace DPK.EKA.Infrastructure.Services
             var results = new List<DocumentChunk>();
 
             var options = new SearchOptions
-            {
-                Size = 5, // Top-K
-                Select = { "id", "content", "source" }
-            };
+                          {
+                              Size = 3,
+                              Select = { "id", "content", "source" }
+                          };
 
-            // 🔹 Vector search configuration
             options.VectorSearch = new VectorSearchOptions
-            {
-                Queries =
-            {
-                new VectorizedQuery(queryVector)
-                {
-                    KNearestNeighborsCount = 5,
-                    Fields = { "contentVector" }
-                }
-            }
-            };
+                                   {
+                                       Queries = {
+                                                   new VectorizedQuery(queryVector)
+                                                   {
+                                                       KNearestNeighborsCount = 3,
+                                                       Fields = { "contentVector" }
+                                                   }
+                                                 }
+                                   };
 
-            // 🔹 Optional: keyword search (hybrid)
-            var response = await _search.SearchAsync<SearchDocument>(
-                searchText: query,  // pass query for hybrid search
-                options: options);
+            var response = await _search.SearchAsync<SearchDocument>(query, options);
 
             await foreach (var result in response.Value.GetResultsAsync())
             {
