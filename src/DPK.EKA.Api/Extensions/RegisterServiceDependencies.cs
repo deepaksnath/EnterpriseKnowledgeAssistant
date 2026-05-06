@@ -4,54 +4,61 @@ using Azure.Search.Documents;
 using DPK.EKA.Application.Interfaces;
 using DPK.EKA.Application.Models;
 using DPK.EKA.Application.Services;
-using DPK.EKA.Domain.Repositories;
 using DPK.EKA.Domain.Services;
-using DPK.EKA.Infrastructure.Repositories;
 using DPK.EKA.Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Options;
+using Serilog;
 using System.Threading.RateLimiting;
+using DPK.EKA.Infrastructure.Extensions;
 
 namespace DPK.EKA.Api.Extensions
 {
     public static class RegisterServiceDependencies
     {
-        public static IServiceCollection RegisterServices(this IServiceCollection services,
-                                                         IConfiguration configuration)
+        public static WebApplicationBuilder RegisterServices(this WebApplicationBuilder builder)
         {
-            // Settings
-            //var config = new ConfigurationBuilder()
-            //             .SetBasePath(Directory.GetCurrentDirectory())
-            //             .AddJsonFile("appsettings.json", optional: false)
-            //             .Build();
+            //Infrastructure Services
+            builder.Services.RegisterInfrastructureServices(builder.Configuration);
 
-            services.AddOptions<AzureAiSettings>()
-                    .Bind(configuration.GetSection("AzureAiSettings"))
+            // Settings
+            builder.Services.AddOptions<AzureAiSettings>()
+                    .Bind(builder.Configuration.GetSection("AzureAiSettings"))
                     .ValidateDataAnnotations()
                     .ValidateOnStart();
 
-            services.AddControllers();
+            builder.Services.AddControllers();
+
+            //Logging - Serilog
+            var logger = new LoggerConfiguration()
+                            .ReadFrom.Configuration(builder.Configuration)
+                            .CreateLogger();
+            builder.Logging.AddSerilog(logger);
+            builder.Host.UseSerilog((ctx, conf) =>
+            {
+                conf.ReadFrom.Configuration(ctx.Configuration);
+            });
 
             // Add Health Checks
-            services.AddHealthChecks()
+            builder.Services.AddHealthChecks()
                     .AddCheck("self", () => HealthCheckResult.Healthy(), tags: new[] { "live" });
             
             // Global Exception Handling
-            services.AddExceptionHandler<GlobalExceptionHandler>();
-            services.AddProblemDetails();
+            builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+            builder.Services.AddProblemDetails();
                         
             // Azure Clients
-            services.AddSingleton(sp =>
+            builder.Services.AddSingleton(sp =>
                      {
                          var s = sp.GetRequiredService<IOptions<AzureAiSettings>>().Value;
                          return new AzureOpenAIClient(new Uri(s.AzureOpenAiEndpoint),
                                                       new AzureKeyCredential(s.AzureOpenAiApiKey));
                      });
 
-            services.AddSingleton(sp =>
+            builder.Services.AddSingleton(sp =>
                      {
                          var s = sp.GetRequiredService<IOptions<AzureAiSettings>>().Value;
                          return new SearchClient(new Uri(s.SearchEndpoint),
@@ -60,20 +67,20 @@ namespace DPK.EKA.Api.Extensions
                      });
 
             // Services
-            services.AddScoped<IDocumentIngestionService, DocumentIngestionService>();
-            services.AddScoped<IEmbeddingService, EmbeddingService>();
-            services.AddScoped<ISearchService, SearchService>();
-            services.AddScoped<IChatService, ChatService>();
-            services.AddScoped<IRagService, RagService>();
-            services.AddScoped<IConversationService, ConversationService>();
+            builder.Services.AddScoped<IDocumentIngestionService, DocumentIngestionService>();
+            builder.Services.AddScoped<IEmbeddingService, EmbeddingService>();
+            builder.Services.AddScoped<ISearchService, SearchService>();
+            builder.Services.AddScoped<IChatService, ChatService>();
+            builder.Services.AddScoped<IRagService, RagService>();
+            builder.Services.AddScoped<IConversationService, ConversationService>();
 
             // Swagger
-            services.AddEndpointsApiExplorer();
-            services.ConfigureOptions<ConfigureSwaggerOptions>();
-            services.AddSwaggerGen();
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.ConfigureOptions<ConfigureSwaggerOptions>();
+            builder.Services.AddSwaggerGen();
 
             // Api Versioning
-            services.AddApiVersioning(options =>
+            builder.Services.AddApiVersioning(options =>
                      {
                          options.DefaultApiVersion = new ApiVersion(1, 0);
                          options.AssumeDefaultVersionWhenUnspecified = true;
@@ -81,14 +88,14 @@ namespace DPK.EKA.Api.Extensions
                          options.ApiVersionReader = new UrlSegmentApiVersionReader();
                      });
 
-            services.AddVersionedApiExplorer(options =>
+            builder.Services.AddVersionedApiExplorer(options =>
                      {
                          options.GroupNameFormat = "'v'VVV";
                          options.SubstituteApiVersionInUrl = true;
                      });
 
             // Rate Limiting
-            services.AddRateLimiter(options =>
+            builder.Services.AddRateLimiter(options =>
             {
                 options.AddSlidingWindowLimiter("SlidingWindowPolicy", opt =>
                 {
@@ -101,7 +108,7 @@ namespace DPK.EKA.Api.Extensions
                 options.RejectionStatusCode = 429;
             });
 
-            return services;
+            return builder;
         }
     }
 }

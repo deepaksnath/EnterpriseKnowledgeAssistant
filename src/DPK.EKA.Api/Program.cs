@@ -1,12 +1,10 @@
 using DPK.EKA.Api.Extensions;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
-using DPK.EKA.Infrastructure.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.RegisterInfrastructureServices(builder.Configuration);
-builder.Services.RegisterServices(builder.Configuration);
+builder.RegisterServices();
 
 var app = builder.Build();
 
