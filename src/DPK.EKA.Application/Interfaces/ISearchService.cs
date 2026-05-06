@@ -1,4 +1,4 @@
-﻿using DPK.EKA.Domain;
+﻿using DPK.EKA.Domain.Models;
 
 namespace DPK.EKA.Application.Interfaces
 {

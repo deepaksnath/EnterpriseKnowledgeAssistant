@@ -4,12 +4,13 @@ using Microsoft.AspNetCore.Mvc;
 namespace DPK.EKA.Api.Controllers
 {
     [ApiController]
-    [Route("api/documents")]
-    public class DocumentsController : ControllerBase
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/documents")]
+    public class DocumentsV1Controller : ControllerBase
     {
         private readonly IDocumentIngestionService _service;
 
-        public DocumentsController(IDocumentIngestionService service)
+        public DocumentsV1Controller(IDocumentIngestionService service)
         {
             _service = service;
         }
@@ -28,7 +29,7 @@ namespace DPK.EKA.Api.Controllers
             using var stream = file.OpenReadStream();
             var result = await _service.ProcessAsync(stream, file.FileName);
 
-            return Ok(result);
+            return Ok(new { Version = "v1", Data = result });
         }
     }
 }

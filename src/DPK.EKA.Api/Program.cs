@@ -2,9 +2,9 @@ using DPK.EKA.Api.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.RegisterServices();
-
 builder.Services.AddControllers();
+
+builder.Services.RegisterServices();
 
 var app = builder.Build();
 

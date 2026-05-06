@@ -1,6 +1,11 @@
 <Solution>
-  <Project Path="DPK.EKA.Api/DPK.EKA.Api.csproj" />
-  <Project Path="DPK.EKA.Application/DPK.EKA.Application.csproj" />
-  <Project Path="DPK.EKA.Domain/DPK.EKA.Domain.csproj" />
-  <Project Path="DPK.EKA.Infrastructure/DPK.EKA.Infrastructure.csproj" />
+  <Folder Name="/src/">
+    <Project Path="src/DPK.EKA.Api/DPK.EKA.Api.csproj" />
+    <Project Path="src/DPK.EKA.Application/DPK.EKA.Application.csproj" />
+    <Project Path="src/DPK.EKA.Domain/DPK.EKA.Domain.csproj" />
+    <Project Path="src/DPK.EKA.Infrastructure/DPK.EKA.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/DPK.EKA.Api.Tests/DPK.EKA.Api.Tests.csproj" Id="19517fe9-a3e5-43ae-bd40-84c26b0d9681" />
+  </Folder>
 </Solution>
