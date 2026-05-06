@@ -1,6 +1,7 @@
 ﻿using DPK.EKA.Application.Interfaces;
 using DPK.EKA.Application.Models;
 using DPK.EKA.Domain.Services;
+using Microsoft.Extensions.Logging;
 
 namespace DPK.EKA.Application.Services
 {
@@ -10,20 +11,25 @@ namespace DPK.EKA.Application.Services
         private readonly ISearchService _searchService;
         private readonly IChatService _chatService;
         private readonly IConversationService _conversationService;
+        private readonly ILogger<RagService> _logger;
 
         public RagService(IConversationService conversationService,
                           IEmbeddingService embeddingService,
                           ISearchService searchService,
-                          IChatService chatService)
+                          IChatService chatService,
+                          ILogger<RagService> logger)
         {
             _conversationService = conversationService;
             _embeddingService = embeddingService;
             _searchService = searchService;
             _chatService = chatService;
+            _logger = logger;
         }
 
         public async Task<RagResponse> GetAnswerAsync(string question)
         {
+            _logger.LogInformation("Received question: {Question}", question);
+
             // 1. Create embedding
             var queryVector = await _embeddingService.CreateEmbeddingAsync(question);
 
@@ -40,7 +46,8 @@ namespace DPK.EKA.Application.Services
             var sources = results.Select(r => r.Source).Distinct().ToList();
 
             // 6. Save conversation into database
-            var res = await _conversationService.CreateConversationAsync(question, answer, sources);
+            _ = await _conversationService.CreateConversationAsync(question, answer, sources);
+            _logger.LogInformation("Conversation saved with question: {Question} and answer: {Answer}", question, answer);
 
             return new RagResponse(answer, sources);
         }
