@@ -10,4 +10,8 @@
     <ProjectReference Include="..\DPK.EKA.Application\DPK.EKA.Application.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Repositories\" />
+  </ItemGroup>
+
 </Project>

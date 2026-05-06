@@ -1,5 +1,6 @@
 ﻿using DPK.EKA.Application.Interfaces;
 using DPK.EKA.Application.Models;
+using DPK.EKA.Domain.Services;
 
 namespace DPK.EKA.Application.Services
 {

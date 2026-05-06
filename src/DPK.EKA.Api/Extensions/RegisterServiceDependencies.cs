@@ -4,6 +4,7 @@ using Azure.Search.Documents;
 using DPK.EKA.Application.Interfaces;
 using DPK.EKA.Application.Models;
 using DPK.EKA.Application.Services;
+using DPK.EKA.Domain.Services;
 using DPK.EKA.Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;

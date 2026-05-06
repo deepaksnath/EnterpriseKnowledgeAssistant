@@ -1,7 +1,7 @@
-﻿using DPK.EKA.Application.Interfaces;
-using DPK.EKA.Application.Models;
+﻿using DPK.EKA.Application.Models;
 using DPK.EKA.Application.Services;
 using DPK.EKA.Domain.Models;
+using DPK.EKA.Domain.Services;
 using Moq;
 
 namespace DPK.EKA.Application.Tests
