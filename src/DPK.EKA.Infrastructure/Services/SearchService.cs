@@ -1,7 +1,7 @@
 ﻿using Azure.Search.Documents;
 using Azure.Search.Documents.Models;
 using DPK.EKA.Application.Interfaces;
-using DPK.EKA.Domain;
+using DPK.EKA.Domain.Models;
 
 namespace DPK.EKA.Infrastructure.Services
 {

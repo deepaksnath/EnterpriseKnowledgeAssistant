@@ -5,13 +5,14 @@ using Microsoft.AspNetCore.Mvc;
 namespace DPK.EKA.Api.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
-    public class RagController : ControllerBase
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/rag")]
+    public class RagV1Controller : ControllerBase
     {
         private readonly IRagService _ragService;
-        private readonly ILogger<RagController> _logger;
+        private readonly ILogger<RagV1Controller> _logger;
 
-        public RagController(IRagService ragService, ILogger<RagController> logger)
+        public RagV1Controller(IRagService ragService, ILogger<RagV1Controller> logger)
         {
             _ragService = ragService;
             _logger = logger;
@@ -31,7 +32,7 @@ namespace DPK.EKA.Api.Controllers
 
                 var response = await _ragService.GetAnswerAsync(request.Question);
 
-                return Ok(response);
+                return Ok(new { Version = "v1", Data = response });
             }
             catch (Exception ex)
             {

@@ -1,4 +1,4 @@
-﻿namespace DPK.EKA.Domain
+﻿namespace DPK.EKA.Domain.Models
 {
     public class DocumentChunk
     {
