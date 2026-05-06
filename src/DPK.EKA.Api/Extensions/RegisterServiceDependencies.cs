@@ -7,7 +7,9 @@ using DPK.EKA.Application.Services;
 using DPK.EKA.Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Options;
+using System.Threading.RateLimiting;
 
 namespace DPK.EKA.Api.Extensions
 {
@@ -74,6 +76,20 @@ namespace DPK.EKA.Api.Extensions
                          options.GroupNameFormat = "'v'VVV";
                          options.SubstituteApiVersionInUrl = true;
                      });
+
+            // Rate limiting
+            services.AddRateLimiter(options =>
+            {
+                options.AddSlidingWindowLimiter("SlidingWindowPolicy", opt =>
+                {
+                    opt.Window = TimeSpan.FromMinutes(1);
+                    opt.PermitLimit = 3;
+                    opt.SegmentsPerWindow = 3;
+                    opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+                });
+
+                options.RejectionStatusCode = 429;
+            });
 
             return services;
         }
