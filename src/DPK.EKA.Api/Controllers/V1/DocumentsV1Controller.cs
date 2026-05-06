@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 
-namespace DPK.EKA.Api.Controllers
+namespace DPK.EKA.Api.Controllers.V1
 {
     [ApiController]
     [ApiVersion("1.0")]
