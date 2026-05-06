@@ -8,6 +8,7 @@ using DPK.EKA.Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Options;
 using System.Threading.RateLimiting;
 
@@ -17,13 +18,7 @@ namespace DPK.EKA.Api.Extensions
     {
         public static IServiceCollection RegisterServices(this IServiceCollection services)
         {
-            services.AddControllers();
-
-            //Global Exception Handling
-            services.AddExceptionHandler<GlobalExceptionHandler>();
-            services.AddProblemDetails();
-
-            // settings
+            // Settings
             var config = new ConfigurationBuilder()
                          .SetBasePath(Directory.GetCurrentDirectory())
                          .AddJsonFile("appsettings.json", optional: false)
@@ -34,7 +29,17 @@ namespace DPK.EKA.Api.Extensions
                     .ValidateDataAnnotations()
                     .ValidateOnStart();
 
-            // Azure clients
+            services.AddControllers();
+
+            // Add Health Checks
+            services.AddHealthChecks()
+                    .AddCheck("self", () => HealthCheckResult.Healthy(), tags: new[] { "live" });
+            
+            // Global Exception Handling
+            services.AddExceptionHandler<GlobalExceptionHandler>();
+            services.AddProblemDetails();
+                        
+            // Azure Clients
             services.AddSingleton(sp =>
                      {
                          var s = sp.GetRequiredService<IOptions<AzureAiSettings>>().Value;
@@ -50,7 +55,7 @@ namespace DPK.EKA.Api.Extensions
                                                  new AzureKeyCredential(s.SearchApiKey));
                      });
 
-            // services
+            // Services
             services.AddScoped<IDocumentIngestionService, DocumentIngestionService>();
             services.AddScoped<IEmbeddingService, EmbeddingService>();
             services.AddScoped<ISearchService, SearchService>();
@@ -62,7 +67,7 @@ namespace DPK.EKA.Api.Extensions
             services.ConfigureOptions<ConfigureSwaggerOptions>();
             services.AddSwaggerGen();
 
-            //Api Versioning
+            // Api Versioning
             services.AddApiVersioning(options =>
                      {
                          options.DefaultApiVersion = new ApiVersion(1, 0);
@@ -77,7 +82,7 @@ namespace DPK.EKA.Api.Extensions
                          options.SubstituteApiVersionInUrl = true;
                      });
 
-            // Rate limiting
+            // Rate Limiting
             services.AddRateLimiter(options =>
             {
                 options.AddSlidingWindowLimiter("SlidingWindowPolicy", opt =>
