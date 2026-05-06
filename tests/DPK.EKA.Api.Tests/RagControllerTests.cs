@@ -1,4 +1,4 @@
-﻿using DPK.EKA.Api.Controllers;
+﻿using DPK.EKA.Api.Controllers.V1;
 using DPK.EKA.Application.Interfaces;
 using DPK.EKA.Application.Models;
 using Microsoft.AspNetCore.Mvc;

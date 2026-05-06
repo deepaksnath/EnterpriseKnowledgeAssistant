@@ -19,6 +19,10 @@ namespace DPK.EKA.Api.Extensions
         {
             services.AddControllers();
 
+            //Global Exception Handling
+            services.AddExceptionHandler<GlobalExceptionHandler>();
+            services.AddProblemDetails();
+
             // settings
             var config = new ConfigurationBuilder()
                          .SetBasePath(Directory.GetCurrentDirectory())
@@ -55,14 +59,8 @@ namespace DPK.EKA.Api.Extensions
 
             // Swagger
             services.AddEndpointsApiExplorer();
-            services.AddSwaggerGen(options =>
-                     {
-                         options.SwaggerDoc("v1", new()
-                         {
-                             Title = "RAG Knowledge API",
-                             Version = "v1"
-                         });
-                     });
+            services.ConfigureOptions<ConfigureSwaggerOptions>();
+            services.AddSwaggerGen();
 
             //Api Versioning
             services.AddApiVersioning(options =>

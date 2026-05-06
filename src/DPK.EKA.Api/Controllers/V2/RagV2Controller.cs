@@ -3,10 +3,10 @@ using DPK.EKA.Application.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 
-namespace DPK.EKA.Api.Controllers
+namespace DPK.EKA.Api.Controllers.V2
 {
     [ApiController]
-    [ApiVersion("1.0")]
+    [ApiVersion("2.0")]
     [Route("api/v{version:apiVersion}/rag")]
     [EnableRateLimiting("SlidingWindowPolicy")]
     public class RagV1Controller : ControllerBase
@@ -34,7 +34,7 @@ namespace DPK.EKA.Api.Controllers
 
                 var response = await _ragService.GetAnswerAsync(request.Question);
 
-                return Ok(new { Version = "v1", Data = response });
+                return Ok(new { Version = "v2", Data = response });
             }
             catch (Exception ex)
             {
