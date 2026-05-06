@@ -2,6 +2,7 @@
 using DPK.EKA.Application.Models;
 using DPK.EKA.Application.Services;
 using DPK.EKA.Domain.Models;
+using DPK.EKA.Domain.Services;
 using Moq;
 
 namespace DPK.EKA.Application.Tests
@@ -10,6 +11,7 @@ namespace DPK.EKA.Application.Tests
     {
         private Mock<IEmbeddingService> _embeddingServiceMock;
         private Mock<ISearchService> _searchServiceMock;
+        private Mock<IConversationService> _conversationServiceMock;
         private Mock<IChatService> _chatServiceMock;
         [SetUp]
         public void Setup()
@@ -17,6 +19,7 @@ namespace DPK.EKA.Application.Tests
             _chatServiceMock = new ();
             _embeddingServiceMock = new ();
             _searchServiceMock = new ();
+            _conversationServiceMock = new ();
         }
 
         [Test]
@@ -37,7 +40,8 @@ namespace DPK.EKA.Application.Tests
             _chatServiceMock.Setup(c => c.GetChatResponseAsync(It.IsAny<string>(), It.IsAny<string>()))
                             .ReturnsAsync("This is a test response.");
 
-            var ragService = new RagService(_embeddingServiceMock.Object, 
+            var ragService = new RagService(_conversationServiceMock.Object,
+                                            _embeddingServiceMock.Object, 
                                             _searchServiceMock.Object, 
                                             _chatServiceMock.Object);
 

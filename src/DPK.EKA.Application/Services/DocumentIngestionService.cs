@@ -1,6 +1,7 @@
 ﻿using DPK.EKA.Application.Interfaces;
 using DPK.EKA.Application.Models;
 using DPK.EKA.Domain.Models;
+using DPK.EKA.Domain.Services;
 using UglyToad.PdfPig;
 
 namespace DPK.EKA.Application.Services

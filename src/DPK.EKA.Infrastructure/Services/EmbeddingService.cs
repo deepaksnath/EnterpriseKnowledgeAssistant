@@ -1,6 +1,6 @@
 ﻿using Azure.AI.OpenAI;
-using DPK.EKA.Application.Interfaces;
 using DPK.EKA.Application.Models;
+using DPK.EKA.Domain.Services;
 using Microsoft.Extensions.Options;
 using OpenAI.Embeddings;
 

@@ -1,4 +1,4 @@
-﻿namespace DPK.EKA.Application.Interfaces
+﻿namespace DPK.EKA.Domain.Services
 {
     public interface IChatService
     {
