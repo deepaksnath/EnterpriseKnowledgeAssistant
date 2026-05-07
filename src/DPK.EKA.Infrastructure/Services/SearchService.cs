@@ -1,15 +1,23 @@
 ﻿using Azure.Search.Documents;
 using Azure.Search.Documents.Models;
+using DPK.EKA.Application.Models;
 using DPK.EKA.Domain.Models;
 using DPK.EKA.Domain.Services;
+using Microsoft.Extensions.Options;
 
 namespace DPK.EKA.Infrastructure.Services
 {
     public class SearchService : ISearchService
     {
         private readonly SearchClient _search;
+        private readonly IOptions<AzureAiSettings> _settings;
 
-        public SearchService(SearchClient search) => _search = search;
+        public SearchService(SearchClient search,
+                             IOptions<AzureAiSettings> settings)
+        {
+            _search = search;
+            _settings = settings;
+        }
 
         public async Task UploadChunksAsync(IEnumerable<DocumentChunk> chunks)
         {
@@ -30,21 +38,20 @@ namespace DPK.EKA.Infrastructure.Services
             var results = new List<DocumentChunk>();
 
             var options = new SearchOptions
-                          {
-                              Size = 3,
-                              Select = { "id", "content", "source" }
-                          };
-
-            options.VectorSearch = new VectorSearchOptions
-                                   {
-                                       Queries = {
-                                                   new VectorizedQuery(queryVector)
-                                                   {
-                                                       KNearestNeighborsCount = 3,
-                                                       Fields = { "contentVector" }
-                                                   }
-                                                 }
-                                   };
+            {
+                Size = _settings.Value.SearchSize,
+                Select = { "id", "content", "source" },
+                VectorSearch = new VectorSearchOptions
+                               {
+                                   Queries = {
+                                               new VectorizedQuery(queryVector)
+                                               {
+                                                   KNearestNeighborsCount = _settings.Value.SearchKNC,
+                                                   Fields = { "contentVector" }
+                                               }
+                                             }
+                               }
+            };
 
             var response = await _search.SearchAsync<SearchDocument>(query, options);
 

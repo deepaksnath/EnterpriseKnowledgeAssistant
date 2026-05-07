@@ -8,30 +8,39 @@ namespace DPK.EKA.Infrastructure.Services
 {
     public class ChatService : IChatService
     {
+        private readonly IOptions<AzureAiSettings> _settings;
         private readonly AzureOpenAIClient _client;
-        private readonly string _deployment;
 
         public ChatService(AzureOpenAIClient client, IOptions<AzureAiSettings> settings)
         {
+            _settings = settings;
             _client = client;
-            _deployment = settings.Value.ChatDeployment; // add this in config
         }
 
         public async Task<string> GetChatResponseAsync(string context, string question)
         {
-            var chatClient = _client.GetChatClient(_deployment);
+            var chatClient = _client.GetChatClient(_settings.Value.ChatDeployment);
 
             var messages = new List<ChatMessage>
                            {
                                new SystemChatMessage(
-                                   "You are a helpful assistant. Answer ONLY from the provided context. " +
-                                   "If the answer is not in the context, say 'I don't know'."),
+                                   $"{_settings.Value.ChatCustomizationMessage}" +
+                                   $" If the answer is not in the context," +
+                                   $" say '{_settings.Value.OutOfContextReply}'."),
 
                                new UserChatMessage(
                                    $"Context:\n{context}\n\nQuestion:\n{question}")
                            };
 
-            var response = await chatClient.CompleteChatAsync(messages);
+            var options = new ChatCompletionOptions()
+                          {
+                              //MaxOutputTokenCount = _settings.Value.ChatMaxTokens,
+                              Temperature = _settings.Value.ChatTemperature,
+                              FrequencyPenalty = _settings.Value.ChatFrequencyPenalty,
+                              PresencePenalty = _settings.Value.ChatPresencePenalty
+                          };
+
+            var response = await chatClient.CompleteChatAsync(messages, options);
 
             return response.Value.Content[0].Text;
         }

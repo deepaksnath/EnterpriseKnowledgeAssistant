@@ -26,5 +26,27 @@ namespace DPK.EKA.Application.Models
 
         [Required]
         public string SearchIndexName { get; set; } = string.Empty;
+
+        public int SearchSize { get; set; } 
+
+        public int SearchKNC { get; set; }
+
+        [Required]
+        public int ChatMaxTokens { get; set; }
+
+        [Required]
+        public float ChatTemperature { get; set; }
+
+        [Required]
+        public float ChatFrequencyPenalty { get; set; }
+
+        [Required]
+        public float ChatPresencePenalty { get; set; }
+
+        [Required]
+        public string ChatCustomizationMessage { get; set; } = string.Empty;
+
+        [Required]
+        public string OutOfContextReply { get; set; } = string.Empty;
     }
 }
