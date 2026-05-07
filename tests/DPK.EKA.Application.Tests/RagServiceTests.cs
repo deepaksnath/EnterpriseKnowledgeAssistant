@@ -3,6 +3,7 @@ using DPK.EKA.Application.Models;
 using DPK.EKA.Application.Services;
 using DPK.EKA.Domain.Models;
 using DPK.EKA.Domain.Services;
+using Microsoft.Extensions.Logging;
 using Moq;
 
 namespace DPK.EKA.Application.Tests
@@ -13,6 +14,8 @@ namespace DPK.EKA.Application.Tests
         private Mock<ISearchService> _searchServiceMock;
         private Mock<IConversationService> _conversationServiceMock;
         private Mock<IChatService> _chatServiceMock;
+        private Mock<ILogger<RagService>> _loggerMock;
+
         [SetUp]
         public void Setup()
         {
@@ -20,6 +23,7 @@ namespace DPK.EKA.Application.Tests
             _embeddingServiceMock = new ();
             _searchServiceMock = new ();
             _conversationServiceMock = new ();
+            _loggerMock = new ();
         }
 
         [Test]
@@ -43,7 +47,8 @@ namespace DPK.EKA.Application.Tests
             var ragService = new RagService(_conversationServiceMock.Object,
                                             _embeddingServiceMock.Object, 
                                             _searchServiceMock.Object, 
-                                            _chatServiceMock.Object);
+                                            _chatServiceMock.Object,
+                                            _loggerMock.Object);
 
             //Act
             var result = ragService.GetAnswerAsync("What is this?");
