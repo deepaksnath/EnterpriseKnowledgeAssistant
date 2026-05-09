@@ -44,6 +44,9 @@ namespace DPK.EKA.Application.Models
         public float ChatPresencePenalty { get; set; }
 
         [Required]
+        public float ChatTopP { get; set; }
+
+        [Required]
         public string ChatCustomizationMessage { get; set; } = string.Empty;
 
         [Required]

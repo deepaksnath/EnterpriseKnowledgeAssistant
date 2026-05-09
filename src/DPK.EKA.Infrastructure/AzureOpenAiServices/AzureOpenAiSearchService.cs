@@ -7,12 +7,12 @@ using Microsoft.Extensions.Options;
 
 namespace DPK.EKA.Infrastructure.Services
 {
-    public class SearchService : ISearchService
+    public class AzureOpenAiSearchService : ISearchService
     {
         private readonly SearchClient _search;
         private readonly IOptions<AzureAiSettings> _settings;
 
-        public SearchService(SearchClient search,
+        public AzureOpenAiSearchService(SearchClient search,
                              IOptions<AzureAiSettings> settings)
         {
             _search = search;

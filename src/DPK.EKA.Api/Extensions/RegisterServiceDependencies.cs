@@ -5,15 +5,18 @@ using DPK.EKA.Application.Interfaces;
 using DPK.EKA.Application.Models;
 using DPK.EKA.Application.Services;
 using DPK.EKA.Domain.Services;
+using DPK.EKA.Infrastructure.Extensions;
+using DPK.EKA.Infrastructure.SemanticKernalServices;
 using DPK.EKA.Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Options;
+using Microsoft.SemanticKernel;
 using Serilog;
 using System.Threading.RateLimiting;
-using DPK.EKA.Infrastructure.Extensions;
 
 namespace DPK.EKA.Api.Extensions
 {
@@ -66,12 +69,32 @@ namespace DPK.EKA.Api.Extensions
                                                 new AzureKeyCredential(s.SearchApiKey));
                     });
 
+            // Semantic Kernal Clients
+            builder.Services.AddSingleton(sp =>
+            {
+                var s = sp.GetRequiredService<IOptions<AzureAiSettings>>().Value;
+
+                var kernelBuilder = Kernel.CreateBuilder();
+
+                kernelBuilder.AddAzureOpenAIChatCompletion(
+                    deploymentName: s.ChatDeployment,
+                    endpoint: s.AzureOpenAiEndpoint,
+                    apiKey: s.AzureOpenAiApiKey);
+
+                kernelBuilder.AddAzureOpenAITextEmbeddingGeneration(
+                    deploymentName: s.EmbeddingDeployment,
+                    endpoint: s.AzureOpenAiEndpoint,
+                    apiKey: s.AzureOpenAiApiKey);
+
+                return kernelBuilder.Build();
+            });
+
             // Services
             builder.Services.AddScoped<IDocumentIngestionService, DocumentIngestionService>();
             builder.Services.AddScoped<IConversationService, ConversationService>();
-            builder.Services.AddScoped<IEmbeddingService, EmbeddingService>();
-            builder.Services.AddScoped<ISearchService, SearchService>();
-            builder.Services.AddScoped<IChatService, ChatService>();
+            builder.Services.AddScoped<IEmbeddingService, SemanticKernelEmbeddingService>();
+            builder.Services.AddScoped<ISearchService, AzureOpenAiSearchService>();
+            builder.Services.AddScoped<IChatService, SemanticKernelChatService>();
             builder.Services.AddScoped<IRagService, RagService>();
 
             // Swagger
