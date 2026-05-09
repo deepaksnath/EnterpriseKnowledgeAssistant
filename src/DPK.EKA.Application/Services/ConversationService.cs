@@ -22,7 +22,7 @@ namespace DPK.EKA.Application.Services
                 Answer = answer,
                 ApiVersion = "v1",
                 CreatedAt = DateTime.UtcNow,
-                Source = string.Join(Environment.NewLine, sources)
+                Source = string.Join("|", sources)
             };
 
             return await _conversationRepository.CreateConversationAsync(conversation);
