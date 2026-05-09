@@ -17,6 +17,8 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.AzureOpenAI" Version="1.75.0" />
+    <PackageReference Include="Microsoft.SemanticKernel.Core" Version="1.75.0" />
   </ItemGroup>
 
   <ItemGroup>

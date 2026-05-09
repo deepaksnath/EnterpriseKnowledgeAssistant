@@ -6,12 +6,12 @@ using OpenAI.Embeddings;
 
 namespace DPK.EKA.Infrastructure.Services
 {
-    public class EmbeddingService : IEmbeddingService
+    public class AzureOpenAiEmbeddingService : IEmbeddingService
     {
         private readonly AzureOpenAIClient _client;
         private readonly string _deployment;
 
-        public EmbeddingService(AzureOpenAIClient client, IOptions<AzureAiSettings> s)
+        public AzureOpenAiEmbeddingService(AzureOpenAIClient client, IOptions<AzureAiSettings> s)
         {
             _client = client;
             _deployment = s.Value.EmbeddingDeployment;

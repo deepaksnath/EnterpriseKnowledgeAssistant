@@ -6,12 +6,12 @@ using OpenAI.Chat;
 
 namespace DPK.EKA.Infrastructure.Services
 {
-    public class ChatService : IChatService
+    public class AzureOpenAiChatService : IChatService
     {
         private readonly IOptions<AzureAiSettings> _settings;
         private readonly AzureOpenAIClient _client;
 
-        public ChatService(AzureOpenAIClient client, IOptions<AzureAiSettings> settings)
+        public AzureOpenAiChatService(AzureOpenAIClient client, IOptions<AzureAiSettings> settings)
         {
             _settings = settings;
             _client = client;
@@ -25,8 +25,10 @@ namespace DPK.EKA.Infrastructure.Services
                            {
                                new SystemChatMessage(
                                    $"{_settings.Value.ChatCustomizationMessage}" +
-                                   $" If the answer is not in the context," +
-                                   $" say '{_settings.Value.OutOfContextReply}'."),
+                                   $"\n Answer ONLY from the provided context." +
+                                   $"\n If the answer is not in the context," +
+                                   $"\n reply exactly with: " +
+                                   $"\n'{_settings.Value.OutOfContextReply}'."),
 
                                new UserChatMessage(
                                    $"Context:\n{context}\n\nQuestion:\n{question}")
@@ -37,8 +39,9 @@ namespace DPK.EKA.Infrastructure.Services
                               //MaxOutputTokenCount = _settings.Value.ChatMaxTokens,
                               Temperature = _settings.Value.ChatTemperature,
                               FrequencyPenalty = _settings.Value.ChatFrequencyPenalty,
-                              PresencePenalty = _settings.Value.ChatPresencePenalty
-                          };
+                              PresencePenalty = _settings.Value.ChatPresencePenalty,
+                              TopP = _settings.Value.ChatTopP
+            };
 
             var response = await chatClient.CompleteChatAsync(messages, options);
 
