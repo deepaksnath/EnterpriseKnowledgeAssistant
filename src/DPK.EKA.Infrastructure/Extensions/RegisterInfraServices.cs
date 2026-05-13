@@ -1,14 +1,20 @@
 ﻿using Azure;
 using Azure.AI.OpenAI;
 using Azure.Search.Documents;
+using DPK.EKA.Application.Interfaces;
 using DPK.EKA.Application.Models;
+using DPK.EKA.Application.Services;
 using DPK.EKA.Domain.Repositories;
+using DPK.EKA.Domain.Services;
 using DPK.EKA.Infrastructure.Repositories;
+using DPK.EKA.Infrastructure.SemanticKernalServices;
+using DPK.EKA.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel;
+using MongoDB.Driver;
 
 namespace DPK.EKA.Infrastructure.Extensions
 {
@@ -21,8 +27,19 @@ namespace DPK.EKA.Infrastructure.Extensions
             services.AddDbContext<RagDbContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
+            // Mongo DB
+            services.AddScoped<IMongoClient>(sp =>
+            {
+                var connectionString = configuration.GetSection("MongoDbSettings").GetValue<string>("ConnectionString");
+                return new MongoClient(connectionString);
+            });
+
             // Repositories
-            services.AddScoped<IConversationRepository, ConversationRepository>();
+            services.AddScoped<IConversationRepository, ConversationMongoDbRepository>();
+            services.AddScoped<IConversationService, ConversationService>();
+            services.AddScoped<IEmbeddingService, SemanticKernelEmbeddingService>();
+            services.AddScoped<ISearchService, AzureOpenAiSearchService>();
+            services.AddScoped<IChatService, SemanticKernelChatService>();
 
             // Azure Clients
             services.AddSingleton(sp =>

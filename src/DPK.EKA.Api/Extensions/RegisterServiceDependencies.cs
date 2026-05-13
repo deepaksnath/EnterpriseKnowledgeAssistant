@@ -52,10 +52,6 @@ namespace DPK.EKA.Api.Extensions
             
             // Services
             builder.Services.AddScoped<IDocumentIngestionService, DocumentIngestionService>();
-            builder.Services.AddScoped<IConversationService, ConversationService>();
-            builder.Services.AddScoped<IEmbeddingService, SemanticKernelEmbeddingService>();
-            builder.Services.AddScoped<ISearchService, AzureOpenAiSearchService>();
-            builder.Services.AddScoped<IChatService, SemanticKernelChatService>();
             builder.Services.AddScoped<IRagService, RagService>();
 
             // Swagger
