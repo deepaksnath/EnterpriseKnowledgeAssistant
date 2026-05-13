@@ -3,11 +3,11 @@ using DPK.EKA.Domain.Repositories;
 
 namespace DPK.EKA.Infrastructure.Repositories
 {
-    public class ConversationRepository : IConversationRepository
+    public class ConversationSqlRepository : IConversationRepository
     {
         private readonly RagDbContext _dbContext;
 
-        public ConversationRepository(RagDbContext dbContext)
+        public ConversationSqlRepository(RagDbContext dbContext)
         {
             _dbContext = dbContext;
         }
