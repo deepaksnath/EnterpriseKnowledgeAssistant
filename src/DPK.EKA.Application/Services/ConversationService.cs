@@ -1,13 +1,14 @@
 ﻿using DPK.EKA.Application.Interfaces;
 using DPK.EKA.Domain.Entities;
 using DPK.EKA.Domain.Repositories;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace DPK.EKA.Application.Services
 {
     public class ConversationService : IConversationService
     {
         private readonly IConversationRepository _conversationRepository;
-        public ConversationService(IConversationRepository conversationRepository) 
+        public ConversationService([FromKeyedServices("MongoDb")] IConversationRepository conversationRepository) 
         { 
             _conversationRepository = conversationRepository;
         }

@@ -1,10 +1,6 @@
-﻿using DPK.EKA.Application.Interfaces;
+﻿using DPK.EKA.Application.Extensions;
 using DPK.EKA.Application.Models;
-using DPK.EKA.Application.Services;
-using DPK.EKA.Domain.Services;
 using DPK.EKA.Infrastructure.Extensions;
-using DPK.EKA.Infrastructure.SemanticKernalServices;
-using DPK.EKA.Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.AspNetCore.RateLimiting;
@@ -19,6 +15,9 @@ namespace DPK.EKA.Api.Extensions
         public static WebApplicationBuilder RegisterServices(this WebApplicationBuilder builder)
         {
             builder.Services.AddControllers();
+
+            //Appication Services
+            builder.Services.RegisterApplicationServices(builder.Configuration);
 
             //Infrastructure Services
             builder.Services.RegisterInfrastructureServices(builder.Configuration);
@@ -49,10 +48,6 @@ namespace DPK.EKA.Api.Extensions
             // Global Exception Handling
             builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
             builder.Services.AddProblemDetails();
-            
-            // Services
-            builder.Services.AddScoped<IDocumentIngestionService, DocumentIngestionService>();
-            builder.Services.AddScoped<IRagService, RagService>();
 
             // Swagger
             builder.Services.AddEndpointsApiExplorer();

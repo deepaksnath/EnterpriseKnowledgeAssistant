@@ -2,6 +2,7 @@
 using DPK.EKA.Application.Models;
 using DPK.EKA.Domain.Models;
 using DPK.EKA.Domain.Services;
+using Microsoft.Extensions.DependencyInjection;
 using UglyToad.PdfPig;
 
 namespace DPK.EKA.Application.Services
@@ -11,7 +12,8 @@ namespace DPK.EKA.Application.Services
         private readonly IEmbeddingService _embedding;
         private readonly ISearchService _search;
 
-        public DocumentIngestionService(IEmbeddingService e, ISearchService s)
+        public DocumentIngestionService([FromKeyedServices("SemanticKernel")] IEmbeddingService e, 
+                                        ISearchService s)
         {
             _embedding = e;
             _search = s;

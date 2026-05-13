@@ -1,6 +1,7 @@
 ﻿using DPK.EKA.Application.Interfaces;
 using DPK.EKA.Application.Models;
 using DPK.EKA.Domain.Services;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace DPK.EKA.Application.Services
@@ -13,10 +14,10 @@ namespace DPK.EKA.Application.Services
         private readonly IConversationService _conversationService;
         private readonly ILogger<RagService> _logger;
 
-        public RagService(IConversationService conversationService,
-                          IEmbeddingService embeddingService,
+        public RagService([FromKeyedServices("SemanticKernel")] IEmbeddingService embeddingService,
+                          [FromKeyedServices("SemanticKernel")] IChatService chatService,
+                          IConversationService conversationService,
                           ISearchService searchService,
-                          IChatService chatService,
                           ILogger<RagService> logger)
         {
             _conversationService = conversationService;
