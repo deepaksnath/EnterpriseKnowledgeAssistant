@@ -1,9 +1,7 @@
 ﻿using Azure;
 using Azure.AI.OpenAI;
 using Azure.Search.Documents;
-using DPK.EKA.Application.Interfaces;
 using DPK.EKA.Application.Models;
-using DPK.EKA.Application.Services;
 using DPK.EKA.Domain.Repositories;
 using DPK.EKA.Domain.Services;
 using DPK.EKA.Infrastructure.Repositories;
@@ -34,12 +32,16 @@ namespace DPK.EKA.Infrastructure.Extensions
                 return new MongoClient(connectionString);
             });
 
-            // Repositories
-            services.AddScoped<IConversationRepository, ConversationMongoDbRepository>();
-            services.AddScoped<IConversationService, ConversationService>();
-            services.AddScoped<IEmbeddingService, SemanticKernelEmbeddingService>();
+            //Repository
+            services.AddKeyedScoped<IConversationRepository, ConversationSqlRepository>("SqlServerDb");
+            services.AddKeyedScoped<IConversationRepository, ConversationMongoDbRepository>("MongoDb");
+            
+            //Services
+            services.AddKeyedScoped<IEmbeddingService, AzureOpenAiEmbeddingService>("AzureOpenAi");
+            services.AddKeyedScoped<IEmbeddingService, SemanticKernelEmbeddingService>("SemanticKernel");
+            services.AddKeyedScoped<IChatService, AzureOpenAiChatService>("AzureOpenAi");
+            services.AddKeyedScoped<IChatService, SemanticKernelChatService>("SemanticKernel");
             services.AddScoped<ISearchService, AzureOpenAiSearchService>();
-            services.AddScoped<IChatService, SemanticKernelChatService>();
 
             // Azure Clients
             services.AddSingleton(sp =>

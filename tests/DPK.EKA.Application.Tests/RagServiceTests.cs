@@ -44,10 +44,10 @@ namespace DPK.EKA.Application.Tests
             _chatServiceMock.Setup(c => c.GetChatResponseAsync(It.IsAny<string>(), It.IsAny<string>()))
                             .ReturnsAsync("This is a test response.");
 
-            var ragService = new RagService(_conversationServiceMock.Object,
-                                            _embeddingServiceMock.Object, 
-                                            _searchServiceMock.Object, 
+            var ragService = new RagService(_embeddingServiceMock.Object,
                                             _chatServiceMock.Object,
+                                            _conversationServiceMock.Object,
+                                            _searchServiceMock.Object, 
                                             _loggerMock.Object);
 
             //Act
