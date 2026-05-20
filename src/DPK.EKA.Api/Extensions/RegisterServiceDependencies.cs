@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Serilog;
+using System.Data.Common;
 using System.Threading.RateLimiting;
 
 namespace DPK.EKA.Api.Extensions
@@ -15,6 +16,10 @@ namespace DPK.EKA.Api.Extensions
         public static WebApplicationBuilder RegisterServices(this WebApplicationBuilder builder)
         {
             builder.Services.AddControllers();
+
+            // Global Exception Handling
+            builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+            builder.Services.AddProblemDetails();
 
             //Appication Services
             builder.Services.RegisterApplicationServices(builder.Configuration);
@@ -43,11 +48,9 @@ namespace DPK.EKA.Api.Extensions
                    .AddCheck("self", () => HealthCheckResult.Healthy(), tags: new[] { "live" })
                    .AddSqlServer(connectionString: builder.Configuration.GetConnectionString("DefaultConnection"),
                                  name: "sql-db",
-                                 tags: new[] { "ready" });
-
-            // Global Exception Handling
-            builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
-            builder.Services.AddProblemDetails();
+                                 tags: new[] { "ready" })
+                   .AddMongoDb(name: "mongo-db",
+                               tags: new[] { "ready" });
 
             // Swagger
             builder.Services.AddEndpointsApiExplorer();

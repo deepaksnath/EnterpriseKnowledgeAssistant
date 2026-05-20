@@ -42,7 +42,7 @@ namespace DPK.EKA.Infrastructure.Extensions
             services.AddKeyedScoped<IChatService, AzureOpenAiChatService>("AzureOpenAi");
             services.AddKeyedScoped<IChatService, SemanticKernelChatService>("SemanticKernel");
             services.AddScoped<ISearchService, AzureOpenAiSearchService>();
-
+            services.AddScoped<PromptBuilder>();
             // Azure Clients
             services.AddSingleton(sp =>
             {
