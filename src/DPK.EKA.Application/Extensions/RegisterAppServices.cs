@@ -14,6 +14,7 @@ namespace DPK.EKA.Application.Extensions
             services.AddScoped<IDocumentIngestionService, DocumentIngestionService>();
             services.AddScoped<IRagService, RagService>();
             services.AddScoped<IConversationService, ConversationService>();
+            services.AddScoped<IFreeChatService, FreeChatService>();
 
             return services;
         }

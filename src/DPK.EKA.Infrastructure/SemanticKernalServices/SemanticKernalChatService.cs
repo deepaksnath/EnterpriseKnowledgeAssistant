@@ -22,7 +22,7 @@ namespace DPK.EKA.Infrastructure.SemanticKernalServices
             _settings = settings;
         }
 
-        public async Task<string> GetChatResponseAsync(string context, string question)
+        public async Task<string> GetRagResponseAsync(string context, string question)
         {
             var (userPrompt, systemPrompt) = await _promptBuilder.BuildPrompt(context, question);
 
@@ -42,6 +42,32 @@ namespace DPK.EKA.Infrastructure.SemanticKernalServices
             {
                 ["userPrompt"] = userPrompt,
                 ["systemPrompt"] = systemPrompt
+            };
+
+            var result = await _kernel.InvokePromptAsync(prompt, arguments);
+
+            return result.ToString();
+        }
+
+        public async Task<string> GetChatResponseAsync(string question)
+        {
+            string prompt = """
+                            {{$systemPrompt}}
+
+                            Question:                            
+                            {{$userPrompt}}
+                            """;
+
+            var settings = new OpenAIPromptExecutionSettings
+            {
+                Temperature = _settings.Value.ChatTemperature,
+                TopP = _settings.Value.ChatTopP
+            };
+
+            var arguments = new KernelArguments(settings)
+            {
+                ["userPrompt"] = question,
+                ["systemPrompt"] = "You are a helpful assistant."
             };
 
             var result = await _kernel.InvokePromptAsync(prompt, arguments);

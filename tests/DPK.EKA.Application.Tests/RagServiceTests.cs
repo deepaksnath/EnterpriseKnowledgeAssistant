@@ -41,7 +41,7 @@ namespace DPK.EKA.Application.Tests
                               }});
             _embeddingServiceMock.Setup(e => e.CreateEmbeddingAsync(It.IsAny<string>()))
                                  .ReturnsAsync(new float[] { 0.1f, 0.2f });
-            _chatServiceMock.Setup(c => c.GetChatResponseAsync(It.IsAny<string>(), It.IsAny<string>()))
+            _chatServiceMock.Setup(c => c.GetRagResponseAsync(It.IsAny<string>(), It.IsAny<string>()))
                             .ReturnsAsync("This is a test response.");
 
             var ragService = new RagService(_embeddingServiceMock.Object,

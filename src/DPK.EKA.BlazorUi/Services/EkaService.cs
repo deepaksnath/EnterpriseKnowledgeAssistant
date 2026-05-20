@@ -11,12 +11,22 @@ namespace DPK.EKA.BlazorUi.Services
 
         public EkaService(HttpClient http) => _http = http;
 
-        public async Task<ChatResponse> SendMessageAsync(ChatRequest request)
+        public async Task<ChatResponse> SendMessageAsync(ChatRequest request, bool isRagChat = false)
         {
-            var response = await _http.PostAsJsonAsync("api/v1/rag/query", request);
-            response.EnsureSuccessStatusCode();
+            if (isRagChat)
+            {
+                var response = await _http.PostAsJsonAsync("api/v1/rag/query", request);
+                response.EnsureSuccessStatusCode();
 
-            return await response.Content.ReadFromJsonAsync<ChatResponse>() ?? new ChatResponse();
+                return await response.Content.ReadFromJsonAsync<ChatResponse>() ?? new ChatResponse();
+            }
+            else
+            {
+                var response = await _http.PostAsJsonAsync("api/v1/freeChat/query", request);
+                response.EnsureSuccessStatusCode();
+
+                return await response.Content.ReadFromJsonAsync<ChatResponse>() ?? new ChatResponse();
+            }
         }
 
         public async Task<bool> UploadPdfAsync(string fileName, Stream fileStream)
