@@ -1,16 +1,15 @@
 ﻿using DPK.EKA.BlazorUi.Models;
 using System.Net.Http.Headers;
-using System.Net.Mime;
 
-namespace DPK.EKA.BlazorUi.Services.LlmService
+namespace DPK.EKA.BlazorUi.Services
 {
-    public class LlmService
+    public class EkaService : IEkaService
     {
         private readonly HttpClient _http;
 
         public HttpClient Client => _http;
 
-        public LlmService(HttpClient http) => _http = http;
+        public EkaService(HttpClient http) => _http = http;
 
         public async Task<ChatResponse> SendMessageAsync(ChatRequest request)
         {

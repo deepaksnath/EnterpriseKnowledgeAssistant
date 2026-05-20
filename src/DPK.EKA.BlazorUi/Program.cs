@@ -1,5 +1,5 @@
 using DPK.EKA.BlazorUi.Components;
-using DPK.EKA.BlazorUi.Services.LlmService;
+using DPK.EKA.BlazorUi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,7 +14,7 @@ builder.Services.AddScoped(sp => new HttpClient
 {
     BaseAddress = new Uri(apiBaseUrl)
 });
-builder.Services.AddScoped<LlmService>();
+builder.Services.AddScoped<IEkaService, EkaService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

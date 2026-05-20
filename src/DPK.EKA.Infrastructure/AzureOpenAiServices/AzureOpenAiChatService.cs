@@ -19,7 +19,7 @@ namespace DPK.EKA.Infrastructure.Services
 
         public async Task<string> GetChatResponseAsync(string context, string question)
         {
-            var chatClient = _client.GetChatClient(_settings.Value.ChatDeployment);
+            var chatClient = _client.GetChatClient(_settings.Value.AzureOpenAiChatDeployment);
 
             var messages = new List<ChatMessage>
                            {

@@ -1,8 +1,8 @@
 ﻿@page "/"
 @using DPK.EKA.BlazorUi.Models
-@using DPK.EKA.BlazorUi.Services.LlmService
+@using DPK.EKA.BlazorUi.Services
 @rendermode InteractiveServer
-@inject LlmService LlmService
+@inject IEkaService LlmService
 
 <div class="chat-wrapper" style="max-width: 700px; margin: 20px auto; border: 1px solid #ddd; border-radius: 8px; display: flex; flex-direction: column; height: 600px; background: white;">
     <div class="chat-header" style="padding: 15px; border-bottom: 1px solid #ddd; background: #f8f9fa;">

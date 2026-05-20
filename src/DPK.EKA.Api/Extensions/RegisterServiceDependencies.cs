@@ -25,7 +25,7 @@ namespace DPK.EKA.Api.Extensions
             // Settings
             builder.Services.AddOptions<AzureAiSettings>()
                    .Bind(builder.Configuration.GetSection("AzureAiSettings"))
-                   .ValidateDataAnnotations()
+                   //.ValidateDataAnnotations()
                    .ValidateOnStart();
 
             //Logging - Serilog

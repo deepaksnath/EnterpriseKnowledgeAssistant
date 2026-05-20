@@ -67,12 +67,12 @@ namespace DPK.EKA.Infrastructure.Extensions
                 var kernelBuilder = Kernel.CreateBuilder();
 
                 kernelBuilder.AddAzureOpenAIChatCompletion(
-                    deploymentName: s.ChatDeployment,
+                    deploymentName: s.AzureOpenAiChatDeployment,
                     endpoint: s.AzureOpenAiEndpoint,
                     apiKey: s.AzureOpenAiApiKey);
 
                 kernelBuilder.AddAzureOpenAITextEmbeddingGeneration(
-                    deploymentName: s.EmbeddingDeployment,
+                    deploymentName: s.AzureOpenAiEmbeddingDeployment,
                     endpoint: s.AzureOpenAiEndpoint,
                     apiKey: s.AzureOpenAiApiKey);
 

@@ -14,7 +14,7 @@ namespace DPK.EKA.Infrastructure.Services
         public AzureOpenAiEmbeddingService(AzureOpenAIClient client, IOptions<AzureAiSettings> s)
         {
             _client = client;
-            _deployment = s.Value.EmbeddingDeployment;
+            _deployment = s.Value.AzureOpenAiEmbeddingDeployment;
         }
         public async Task<ReadOnlyMemory<float>> CreateEmbeddingAsync( string text)
         {

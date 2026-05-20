@@ -1,7 +1,7 @@
 ﻿@page "/upload"
-@using DPK.EKA.BlazorUi.Services.LlmService
+@using DPK.EKA.BlazorUi.Services
 @rendermode InteractiveServer
-@inject LlmService LlmService
+@inject IEkaService LlmService
 
 <div class="upload-wrapper" style="max-width: 600px; margin: 40px auto; padding: 30px; border: 1px solid #ddd; border-radius: 8px; background: white; text-align: center;">
     <h3>Upload PDF Knowledge Base</h3>
