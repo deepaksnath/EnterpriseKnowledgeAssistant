@@ -13,10 +13,10 @@ namespace DPK.EKA.Application.Models
         public string AzureOpenAiApiKey { get; set; } = string.Empty;
 
         [Required]
-        public string ChatDeployment { get; set; } = string.Empty;
+        public string AzureOpenAiChatDeployment { get; set; } = string.Empty;
 
         [Required]
-        public string EmbeddingDeployment { get; set; } = string.Empty;
+        public string AzureOpenAiEmbeddingDeployment { get; set; } = string.Empty;
 
         [Required]
         public string SearchApiKey { get; set; } = string.Empty;

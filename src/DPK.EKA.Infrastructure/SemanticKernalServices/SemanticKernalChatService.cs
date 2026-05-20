@@ -34,7 +34,6 @@ namespace DPK.EKA.Infrastructure.SemanticKernalServices
 
             var settings = new OpenAIPromptExecutionSettings
             {
-                // MaxTokens = _settings.Value.ChatMaxTokens,
                 Temperature = _settings.Value.ChatTemperature,
                 TopP = _settings.Value.ChatTopP
             };
@@ -51,26 +50,5 @@ namespace DPK.EKA.Infrastructure.SemanticKernalServices
 
             return result.ToString();
         }
-
-        //public async Task<string> GetChatResponseAsync1(string context, string question)
-        //{
-        //    string prompt = $"{_settings.Value.ChatCustomizationMessage}" +
-        //                    $"\n Answer ONLY from the provided context." +
-        //                    $"\n If the answer is not in the context," +
-        //                    $"\n reply exactly with: " +
-        //                    $"\n'{_settings.Value.OutOfContextReply}'.";
-                        
-        //    var options = new ChatOptions
-        //    {
-        //        Temperature = _settings.Value.ChatTemperature,
-        //        FrequencyPenalty = _settings.Value.ChatFrequencyPenalty,
-        //        PresencePenalty = _settings.Value.ChatPresencePenalty,
-        //        TopP = _settings.Value.ChatTopP
-        //    };
-
-        //    var result = await _chatClient.GetResponseAsync(prompt, options);
-
-        //    return result.ToString();
-        //}
     }
 }

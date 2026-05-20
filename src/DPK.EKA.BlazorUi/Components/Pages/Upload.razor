@@ -1,0 +1,99 @@
+﻿@page "/upload"
+@using DPK.EKA.BlazorUi.Services
+@rendermode InteractiveServer
+@inject IEkaService LlmService
+
+<div class="upload-wrapper" style="max-width: 600px; margin: 40px auto; padding: 30px; border: 1px solid #ddd; border-radius: 8px; background: white; text-align: center;">
+    <h3>Upload PDF Knowledge Base</h3>
+    <p style="color: #666;">Select a PDF document and click the button to upload it to the LLM model context.</p>
+
+    <!-- File Selection Box -->
+    <div style="border: 2px dashed #007bff; padding: 40px 20px; border-radius: 6px; background: #f8f9fa; margin: 20px 0;">
+        <InputFile OnChange="OnFileSelected" accept=".pdf" disabled="@_isUploading" style="display: block; margin: 0 auto; cursor: pointer;" />
+        <span style="display: block; margin-top: 10px; color: #888; font-size: 0.85rem;">Max file size: 10MB</span>
+    </div>
+
+    <!-- Selected File Meta and Action Button -->
+    @if (_selectedFile != null)
+    {
+        <div style="margin: 20px 0; padding: 15px; background: #e9ecef; border-radius: 4px; display: flex; flex-direction: column; align-items: center; gap: 12px;">
+            <div style="font-size: 0.95rem; color: #333;">
+                📄 <strong>@_selectedFile.Name</strong> (@(_selectedFile.Size / 1024) KB)
+            </div>
+
+            <button @onclick="UploadDocument"
+                    disabled="@_isUploading"
+                    style="padding: 10px 24px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; width: 100%; max-width: 200px;">
+                @(_isUploading ? "Uploading..." : "Upload Document")
+            </button>
+        </div>
+    }
+
+    <!-- Execution Status Alert Banner -->
+    @if (!string.IsNullOrEmpty(_statusMessage))
+    {
+        <div style="margin-top: 20px; padding: 12px; border-radius: 4px; font-weight: 500;
+            background-color: @(_isError ? "#f8d7da" : "#d4edda");
+            color: @(_isError ? "#721c24" : "#155724");
+            border: 1px solid @(_isError ? "#f5c6cb" : "#c3e6cb");">
+            @_statusMessage
+        </div>
+    }
+</div>
+
+@code {
+    private IBrowserFile? _selectedFile;
+    private bool _isUploading = false;
+    private bool _isError = false;
+    private string _statusMessage = "";
+    private const long MaxFileSize = 10 * 1024 * 1024; // 10MB Limit
+
+    private void OnFileSelected(InputFileChangeEventArgs e)
+    {
+        // Reset status alerts when a fresh file is chosen
+        _statusMessage = "";
+        _isError = false;
+
+        // Save the chosen file reference into state memory
+        _selectedFile = e.File;
+    }
+
+    private async Task UploadDocument()
+    {
+        if (_selectedFile == null) return;
+
+        _isUploading = true;
+        _isError = false;
+        _statusMessage = $"Uploading '{_selectedFile.Name}' to API...";
+
+        try
+        {
+            // Open the browser binary payload data stream path
+            using var fileStream = _selectedFile.OpenReadStream(MaxFileSize);
+
+            // Send payload data directly to the service layer HTTP pipeline agent
+            var success = await LlmService.UploadPdfAsync(_selectedFile.Name, fileStream);
+
+            if (success)
+            {
+                _isError = false;
+                _statusMessage = $"Success! '{_selectedFile.Name}' has been uploaded and indexed.";
+                _selectedFile = null; // Clear selections on success
+            }
+            else
+            {
+                _isError = true;
+                _statusMessage = "Upload failed. Your Web API application layer rejected the file format.";
+            }
+        }
+        catch (Exception ex)
+        {
+            _isError = true;
+            _statusMessage = $"System Connection Error: {ex.Message}";
+        }
+        finally
+        {
+            _isUploading = false;
+        }
+    }
+}
