@@ -1,6 +1,7 @@
 ﻿using Azure.AI.OpenAI;
 using DPK.EKA.Application.Models;
 using DPK.EKA.Domain.Services;
+using DPK.EKA.Infrastructure.Extensions;
 using Microsoft.Extensions.Options;
 using OpenAI.Chat;
 
@@ -10,9 +11,13 @@ namespace DPK.EKA.Infrastructure.Services
     {
         private readonly IOptions<AzureAiSettings> _settings;
         private readonly AzureOpenAIClient _client;
+        private readonly PromptBuilder _promptBuilder;
 
-        public AzureOpenAiChatService(AzureOpenAIClient client, IOptions<AzureAiSettings> settings)
+        public AzureOpenAiChatService(PromptBuilder promptBuilder, 
+                                      AzureOpenAIClient client, 
+                                      IOptions<AzureAiSettings> settings)
         {
+            _promptBuilder = promptBuilder;
             _settings = settings;
             _client = client;
         }
@@ -21,22 +26,17 @@ namespace DPK.EKA.Infrastructure.Services
         {
             var chatClient = _client.GetChatClient(_settings.Value.AzureOpenAiChatDeployment);
 
+            var (userPrompt, systemPrompt) = await _promptBuilder.BuildPrompt(context, question);
+
             var messages = new List<ChatMessage>
                            {
-                               new SystemChatMessage(
-                                   $"{_settings.Value.ChatCustomizationMessage}" +
-                                   $"\n Answer ONLY from the provided context." +
-                                   $"\n If the answer is not in the context," +
-                                   $"\n reply exactly with: " +
-                                   $"\n'{_settings.Value.OutOfContextReply}'."),
+                               new SystemChatMessage(systemPrompt),
 
-                               new UserChatMessage(
-                                   $"Context:\n{context}\n\nQuestion:\n{question}")
+                               new UserChatMessage(userPrompt)
                            };
 
             var options = new ChatCompletionOptions()
                           {
-                              //MaxOutputTokenCount = _settings.Value.ChatMaxTokens,
                               Temperature = _settings.Value.ChatTemperature,
                               FrequencyPenalty = _settings.Value.ChatFrequencyPenalty,
                               PresencePenalty = _settings.Value.ChatPresencePenalty,

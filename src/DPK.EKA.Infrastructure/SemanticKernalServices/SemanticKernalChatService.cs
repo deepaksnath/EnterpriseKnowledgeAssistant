@@ -1,5 +1,6 @@
 ﻿using DPK.EKA.Application.Models;
 using DPK.EKA.Domain.Services;
+using DPK.EKA.Infrastructure.Extensions;
 using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
@@ -10,26 +11,25 @@ namespace DPK.EKA.Infrastructure.SemanticKernalServices
     {
         private readonly IOptions<AzureAiSettings> _settings;
         private readonly Kernel _kernel;
+        private readonly PromptBuilder _promptBuilder;
 
-        public SemanticKernelChatService(Kernel kernel, IOptions<AzureAiSettings> settings)
+        public SemanticKernelChatService(PromptBuilder promptBuilder, 
+                                         Kernel kernel, 
+                                         IOptions<AzureAiSettings> settings)
         {
+            _promptBuilder = promptBuilder;
             _kernel = kernel;
             _settings = settings;
         }
 
         public async Task<string> GetChatResponseAsync(string context, string question)
         {
+            var (userPrompt, systemPrompt) = await _promptBuilder.BuildPrompt(context, question);
+
             string prompt = """
-                            {{$chatCustomizationMessage}}
-
-                            If the answer is not in the context, ONLY say:
-                            {{$outOfContextReply}}
-
-                            Context:
-                            {{$chatContext}}
-
-                            Question:
-                            {{$chatQuestion}}
+                            {{$systemPrompt}}
+                                                        
+                            {{$userPrompt}}
                             """;
 
             var settings = new OpenAIPromptExecutionSettings
@@ -40,10 +40,8 @@ namespace DPK.EKA.Infrastructure.SemanticKernalServices
 
             var arguments = new KernelArguments(settings)
             {
-                ["chatCustomizationMessage"] = _settings.Value.ChatCustomizationMessage,
-                ["outOfContextReply"] = _settings.Value.OutOfContextReply,
-                ["chatContext"] = context,
-                ["chatQuestion"] = question
+                ["userPrompt"] = userPrompt,
+                ["systemPrompt"] = systemPrompt
             };
 
             var result = await _kernel.InvokePromptAsync(prompt, arguments);
