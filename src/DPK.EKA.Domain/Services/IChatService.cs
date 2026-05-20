@@ -2,6 +2,7 @@
 {
     public interface IChatService
     {
-        Task<string> GetChatResponseAsync(string context, string question);
+        Task<string> GetChatResponseAsync(string question);
+        Task<string> GetRagResponseAsync(string context, string question); 
     }
 }

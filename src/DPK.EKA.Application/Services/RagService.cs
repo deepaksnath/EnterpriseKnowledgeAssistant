@@ -41,7 +41,7 @@ namespace DPK.EKA.Application.Services
             var context = string.Join("\n", results.Select(r => r.Content));
 
             // 4. Call LLM
-            var answer = await _chatService.GetChatResponseAsync(context, question);
+            var answer = await _chatService.GetRagResponseAsync(context, question);
 
             // 5. Extract sources
             var sources = results.Select(r => r.Source).Distinct().ToList();

@@ -1,12 +1,26 @@
 ﻿@page "/"
+<PageTitle>Home</PageTitle>
 @using DPK.EKA.BlazorUi.Models
 @using DPK.EKA.BlazorUi.Services
 @rendermode InteractiveServer
 @inject IEkaService LlmService
 
 <div class="chat-wrapper" style="max-width: 700px; margin: 20px auto; border: 1px solid #ddd; border-radius: 8px; display: flex; flex-direction: column; height: 600px; background: white;">
-    <div class="chat-header" style="padding: 15px; border-bottom: 1px solid #ddd; background: #f8f9fa;">
+    <!-- Chat Header with RAG Toggle Control Switch -->
+    <div class="chat-header" style="padding: 15px; border-bottom: 1px solid #ddd; background: #f8f9fa; display: flex; justify-content: space-between; align-items: center;">
         <h4 style="margin: 0;">Enterprise Knowledge Assistant</h4>
+
+        <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 0.85rem; font-weight: bold; color: @(_isRagEnabled ? "#28a745" : "#6c757d");">
+                📁 RAG @(_isRagEnabled ? "ON" : "OFF")
+            </span>
+            <label class="switch" style="position: relative; display: inline-block; width: 44px; height: 24px; margin: 0;">
+                <input type="checkbox" @bind="_isRagEnabled" style="opacity: 0; width: 0; height: 0;" />
+                <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: @(_isRagEnabled ? "#28a745" : "#ccc"); transition: .4s; border-radius: 24px;">
+                    <span style="position: absolute; content: ''; height: 16px; width: 16px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; transform: @(_isRagEnabled ? "translateX(20px)" : "none");"></span>
+                </span>
+            </label>
+        </div>
     </div>
 
     <!-- Chat History -->
@@ -41,7 +55,8 @@
 
 @code {
     private string _userInput = "";
-    private bool _isThinking = false;
+    private bool _isThinking = false; 
+    private bool _isRagEnabled = true;
     private List<ChatMessageDto> _chatHistory = new();
 
     private async Task SendToLlm()
@@ -55,7 +70,7 @@
 
         try
         {
-            var response = await LlmService.SendMessageAsync(new ChatRequest(message));
+            var response = await LlmService.SendMessageAsync(new ChatRequest(message), _isRagEnabled);
             _chatHistory.Add(new ChatMessageDto("assistant", response.Data.Answer));
         }
         catch (Exception ex)

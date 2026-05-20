@@ -22,7 +22,7 @@ namespace DPK.EKA.Infrastructure.Services
             _client = client;
         }
 
-        public async Task<string> GetChatResponseAsync(string context, string question)
+        public async Task<string> GetRagResponseAsync(string context, string question)
         {
             var chatClient = _client.GetChatClient(_settings.Value.AzureOpenAiChatDeployment);
 
@@ -41,6 +41,29 @@ namespace DPK.EKA.Infrastructure.Services
                               FrequencyPenalty = _settings.Value.ChatFrequencyPenalty,
                               PresencePenalty = _settings.Value.ChatPresencePenalty,
                               TopP = _settings.Value.ChatTopP
+            };
+
+            var response = await chatClient.CompleteChatAsync(messages, options);
+
+            return response.Value.Content[0].Text;
+        }
+        public async Task<string> GetChatResponseAsync(string question)
+        {
+            var chatClient = _client.GetChatClient(_settings.Value.AzureOpenAiChatDeployment);
+
+            var messages = new List<ChatMessage>
+                           {
+                               new SystemChatMessage(_settings.Value.ChatCustomizationMessage),
+
+                               new UserChatMessage(question)
+                           };
+
+            var options = new ChatCompletionOptions()
+            {
+                Temperature = _settings.Value.ChatTemperature,
+                FrequencyPenalty = _settings.Value.ChatFrequencyPenalty,
+                PresencePenalty = _settings.Value.ChatPresencePenalty,
+                TopP = _settings.Value.ChatTopP
             };
 
             var response = await chatClient.CompleteChatAsync(messages, options);
