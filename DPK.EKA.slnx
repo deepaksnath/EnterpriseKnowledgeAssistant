@@ -2,6 +2,7 @@
   <Folder Name="/src/">
     <Project Path="src/DPK.EKA.Api/DPK.EKA.Api.csproj" />
     <Project Path="src/DPK.EKA.Application/DPK.EKA.Application.csproj" />
+    <Project Path="src/DPK.EKA.BlazorUi/DPK.EKA.BlazorUi.csproj" Id="507b78d9-0182-4689-b086-34bdf0e52d13" />
     <Project Path="src/DPK.EKA.Domain/DPK.EKA.Domain.csproj" />
     <Project Path="src/DPK.EKA.Infrastructure/DPK.EKA.Infrastructure.csproj" />
   </Folder>
